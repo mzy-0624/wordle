@@ -111,7 +111,7 @@ void game(void)
 		printf("\n");
 		if (rightCount == len)
 		{
-			printf("Congratulation!\n");
+			printf("Congratulations!\n");
 			ans(word, meaning, green);
 			exit(0);
 		}
