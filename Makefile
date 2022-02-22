@@ -1,5 +1,6 @@
+HARD ?= EASY
 run:
-	@gcc wordle.c -o wordle.out;
+	@gcc wordle.c -o wordle.out -D$(HARD);
 	@./wordle.out;
 clean:
 	@rm -rf *.out;

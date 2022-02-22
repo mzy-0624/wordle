@@ -2,6 +2,7 @@
 enum chState charState[26], *wordState;
 int len, chances;
 const char *word, *meaning;
+bool hard = false;
 void init(void)
 {
 	srand(time(NULL));
@@ -10,8 +11,8 @@ void init(void)
 	meaning = wordlist[line].meaning;
 	len = strlen(word), chances = (len - 1) * 2;
 	wordState = (enum chState *)malloc(sizeof(enum chState) * len);
-	memset(wordState, 0, sizeof(wordState));	// state: unKnown
-	memset(charState, 0, sizeof(charState));	// state: unKnown
+	memset(wordState, 0, sizeof(wordState)); // state: unKnown
+	memset(charState, 0, sizeof(charState)); // state: unKnown
 }
 bool checkCh(const char *_, char ch)
 {
@@ -28,6 +29,7 @@ bool checkInput(const char *_)
 		printf("Your word's length is %d not equals %d.\n", _len, len);
 		return false;
 	}
+#ifdef HARD
 	for (int i = 0; i < len; i++)
 		if (wordState[i] == right && _[i] != word[i])
 		{
@@ -40,7 +42,8 @@ bool checkInput(const char *_)
 			{
 				printf("Your word must contain '%c' (maybe more than one).\n", word[i]);
 				return false;
-			}	
+			}
+#endif
 	return true;
 }
 void game(void)
@@ -51,16 +54,16 @@ void game(void)
 		for (int i = 0; i < 26; i++)
 			switch (charState[i])
 			{
-				case unKnown:	// black
+				case unKnown: // black
 					printf("%c ", i + 'a');
 					break;
-				case notExist:	// gray
+				case notExist: // gray
 					printf(gray "%c " cend, i + 'a');
 					break;
-				case right:		// green
+				case right: // green
 					printf(green "%c " cend, i + 'a');
 					break;
-				case exist:		// yellow
+				case exist: // yellow
 					printf(yellow "%c " cend, i + 'a');
 					break;
 			}
@@ -69,32 +72,30 @@ void game(void)
 		do {
 			printf("Please enter a word of length %d. Press q to exit: ", len);
 			scanf("%s", _);
-			if (strcmp(_, "q") == 0)
+			if (strcmp(_, "q") == 0 || strcmp(_, "Q") == 0)
 				return;
 		} while (checkInput(_) == false);
 
 		enum chState *_State = (enum chState *)malloc(sizeof(enum chState) * len);
-		memset(_State, 0, sizeof(_State));	// unknown
+		memset(_State, 0, sizeof(_State)); // unknown
 		int rightCount = 0;
 
 		for (int i = 0; i < len; i++)
-		{
 			if (_[i] == word[i])
 			{
-				_State[i] = wordState[i] = charState[_[i] - 'a']  = right;	// green
+				_State[i] = wordState[i] = charState[_[i] - 'a'] = right; // green
 				rightCount++;
 			}
 			else if (strchr(word, _[i]) == NULL)
-				_State[i] = charState[_[i] - 'a'] = notExist;				// gray
-		}
-		for (int i = 0; i < len; i++)										// yellow
+				_State[i] = charState[_[i] - 'a'] = notExist; // gray
+		for (int i = 0; i < len; i++) // yellow
 			if (wordState[i] != right && wordState[i] != notExist)
 				for (int j = 0; j < len; j++)
 					if (word[i] == _[j] && _State[j] == unKnown)
 					{
-						wordState[i] = _State[j] = charState[word[i] - 'a']= exist;
+						wordState[i] = _State[j] = charState[word[i] - 'a'] = exist;
 						break;
-					}		
+					}
 		for (int i = 0; i < len; i++)
 			switch (_State[i])
 			{
@@ -104,7 +105,7 @@ void game(void)
 				case exist:
 					printf(yellow "%c" cend, _[i]);
 					break;
-				default:	// notExist
+				default: // notExist
 					printf(gray "%c" cend, _[i]);
 					break;
 			}
