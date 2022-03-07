@@ -54,16 +54,16 @@ void game(void)
 		for (int i = 0; i < 26; i++)
 			switch (charState[i])
 			{
-				case unKnown: // black
+				case unKnown:   // black
 					printf("%c ", i + 'a');
 					break;
-				case notExist: // gray
+				case notExist:  // gray
 					printf(gray "%c " cend, i + 'a');
 					break;
-				case right: // green
+				case right:     // green
 					printf(green "%c " cend, i + 'a');
 					break;
-				case exist: // yellow
+				case exist:     // yellow
 					printf(yellow "%c " cend, i + 'a');
 					break;
 			}
